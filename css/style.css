@@ -1,13 +1,39 @@
 body {
-    background-color: black;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.8) 20%, rgba(0, 0, 0, 1) 100%);
     margin: 0;
     overflow: hidden;
 }
+
 .container {
     position: relative;
     width: 100vw;
     height: 100vh;
 }
+
+@keyframes distantStars {
+    0% {
+        opacity: 0.2;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+
+    100% {
+        opacity: 0.2;
+    }
+}
+
+.distant-star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background-color: white;
+    border-radius: 50%;
+    animation: distantStars 3s infinite ease-in-out;
+    opacity: 0;
+}
+
 .star {
     position: absolute;
     width: 10px;
@@ -17,10 +43,26 @@ body {
     transition: transform 0.3s, box-shadow 0.3s;
     transform: translate(-50%, -50%);
 }
+
 .star:hover {
     transform: translate(-50%, -50%) scale(1.5);
     box-shadow: 0 0 10px white;
 }
+
+@keyframes twinkle {
+    0% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.6;
+    }
+}
+
 canvas {
     position: absolute;
     top: 0;
@@ -28,4 +70,20 @@ canvas {
     width: 100vw;
     height: 100vh;
     pointer-events: none;
+}
+
+.line {
+    position: absolute;
+    background-color: white;
+    transform-origin: top left;
+    transition: opacity 0.3s ease-in-out;
+}
+
+
+.line.visible {
+    opacity: 1;
+}
+
+.line.hidden {
+    opacity: 0;
 }
