@@ -136,3 +136,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     drawStars();
 });
+
+document.body.addEventListener('click', function() {
+    const music = document.getElementById('background-music');
+    music.play().catch(error => {
+        console.error('Error al intentar reproducir la música:', error);
+    });
+});
