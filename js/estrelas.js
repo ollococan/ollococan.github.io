@@ -90,7 +90,8 @@ document.addEventListener("DOMContentLoaded", function () {
         let progress = 0;
         const lineDrawInterval = setInterval(() => {
             progress += Math.random() * 0.02 + 0.01;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Remove the clearRect call to keep the existing lines
             ctx.strokeStyle = "white";
             ctx.lineWidth = 2;
             ctx.beginPath();
@@ -103,6 +104,41 @@ document.addEventListener("DOMContentLoaded", function () {
                 linesDrawn++;
             }
         }, 20);
+    }
+
+    function createModal() {
+        const modalOverlay = document.createElement('div');
+        modalOverlay.id = 'modal-overlay';
+
+        const modal = document.createElement('div');
+        modal.id = 'poem-modal';
+
+        const poemContent = document.createElement('div');
+        poemContent.id = 'poem-content';
+
+        // Add click event to the overlay, modal, and content to close the modal
+        modalOverlay.addEventListener('click', () => {
+            modalOverlay.style.opacity = '0'; // Fade out
+            setTimeout(() => {
+                modalOverlay.style.display = 'none'; // Hide after fade-out
+            }, 500); // Match the transition duration
+        });
+
+        // Append elements
+        modal.appendChild(poemContent);
+        modalOverlay.appendChild(modal);
+        document.body.appendChild(modalOverlay);
+    }
+
+    function showModal(poemText) {
+        const modalOverlay = document.getElementById('modal-overlay');
+        const poemContent = document.getElementById('poem-content');
+        poemContent.innerText = poemText;
+
+        modalOverlay.style.display = 'block'; // Make it visible
+        setTimeout(() => {
+            modalOverlay.style.opacity = '1'; // Fade in after display is set
+        }, 0); // Allow the browser to register the display change before starting the transition
     }
 
     function handleStarClick(event) {
@@ -123,6 +159,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 drawStars();
             }
         }
+
+        // Fetch and display the poem for the clicked star
+        fetch(`assets/poems/poema_de_proba.xml`)
+            .then(response => response.text())
+            .then(data => {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(data, "text/xml");
+                const poemText = xmlDoc.getElementsByTagName("poema")[0].textContent;
+                showModal(poemText);
+            })
+            .catch(error => {
+                console.error('Error fetching the poem:', error);
+                showModal('Poem not found.');
+            });
     }
 
     const style = document.createElement('style');
@@ -135,6 +185,9 @@ document.addEventListener("DOMContentLoaded", function () {
     document.head.appendChild(style);
 
     drawStars();
+
+    // Call this function once to create the modal
+    createModal();
 });
 
 document.body.addEventListener('click', function() {
